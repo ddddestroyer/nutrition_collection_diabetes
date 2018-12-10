@@ -42,7 +42,7 @@ class DiabetesScraper:
         category_columns = ["id", "name"]
         category_master_df = pd.DataFrame(category_list, columns=category_columns)
         category_master_df.to_csv(f"{PROJECT_ROOT}/data/category_master.csv", index=False, encoding='utf-8')
-        self.logger(category_master_df)
+        # self.logger(category_master_df)
 
         return category_master_df
 

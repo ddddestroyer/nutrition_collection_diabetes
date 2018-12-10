@@ -15,9 +15,10 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException, WebDriverException
 from selenium.common.exceptions import TimeoutException
+from pyvirtualdisplay import Display
 
 BASE_URL = "https://www.diabetesfoodhub.org/all-recipes.html"
-PROJECT_ROOT = "/Users/d/nutrition_collection_diabetes"
+PROJECT_ROOT = os.path.expanduser("~/nutrition_collection_diabetes")
 
 class DiabetesScraper:
 
@@ -162,8 +163,12 @@ class DiabetesScraper:
         root_category_df = self.scrape_category()
 
         # webdriverを用いて各カテゴリごとにURLを取得する
-        driver_path = os.path.expanduser('~/chromedriver')
-        driver = webdriver.Chrome(driver_path)
+        # driver_path = os.path.expanduser('~/chromedriver')
+
+        display = Display(visible=0, size=(1024, 768))
+        display.start()
+        driver = webdriver.Chrome()
+        driver.set_window_size(1024, 768)
         driver.get(f"{BASE_URL}")
 
         cooking_id_num = 0

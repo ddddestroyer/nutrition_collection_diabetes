@@ -226,7 +226,8 @@ class DiabetesScraper:
             for order_in_page, recipe_url in enumerate(recipe_url_list):
 
                 order_in_page += 1
-                cooking_id = int(category_row["id"])*10000 + order_in_page
+                cooking_num = str(int(category_row["id"])*10000 + order_in_page)
+                cooking_id = cooking_num.zfill(6)
 
                 category_dict = {"root_id": category_row["id"]}
                 self.save_recipe(f"{recipe_url}", cooking_id, category_dict)

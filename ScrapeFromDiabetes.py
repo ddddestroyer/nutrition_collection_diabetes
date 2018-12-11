@@ -48,11 +48,16 @@ class DiabetesScraper:
 
     # 料理情報の取得
     def scrape_cooking_info(self, recipe_page_soup, cooking_id):
-
+        time.sleep(0.5)
         cooking_info = {}
         cooking_info['cooking_id'] = cooking_id
         # 料理名
         cooking_info['cooking_name'] = recipe_page_soup.find('span', {'itemprop': 'name'}).text
+        # 画像
+        image_url = recipe_page_soup.find("img", {"itemprop": "image"}).get('src')
+        image_name = f"id_{cooking_id}.png"
+        with open(f"{PROJECT_ROOT}/data/recipe_images/{image_name}", "wb") as f:
+            f.write(requests.get(image_url).content)
         # Description
         try:
             if recipe_page_soup.find('div', class_='recipe__description').p:
@@ -171,8 +176,6 @@ class DiabetesScraper:
         driver.set_window_size(1024, 768)
         driver.get(f"{BASE_URL}")
 
-        cooking_id_num = 0
-
         for num, category_row in root_category_df.iterrows():
 
             if num == 0:
@@ -223,12 +226,10 @@ class DiabetesScraper:
             for order_in_page, recipe_url in enumerate(recipe_url_list):
 
                 order_in_page += 1
-                cooking_id = order_in_page + cooking_id_num
+                cooking_id = int(category_row["id"])*10000 + order_in_page
 
                 category_dict = {"root_id": category_row["id"]}
                 self.save_recipe(f"{recipe_url}", cooking_id, category_dict)
-            else:
-                cooking_id_num += len(recipe_url_list)
 
         driver.close()
 

@@ -50,14 +50,15 @@ class DiabetesScraper:
     def scrape_cooking_info(self, recipe_page_soup, cooking_id):
         time.sleep(0.5)
         cooking_info = {}
-        cooking_info['cooking_id'] = cooking_id
+        cooking_info["cooking_id"] = cooking_id
         # 料理名
-        cooking_info['cooking_name'] = recipe_page_soup.find('span', {'itemprop': 'name'}).text
+        cooking_info["cooking_name"] = recipe_page_soup.find('span', {"itemprop": "name"}).text
         # 画像
-        image_url = recipe_page_soup.find("img", {"itemprop": "image"}).get('src')
+        image_url = recipe_page_soup.find("img", {"itemprop": "image"}).get("src")
         image_name = f"id_{cooking_id}.png"
         with open(f"{PROJECT_ROOT}/data/recipe_images/{image_name}", "wb") as f:
             f.write(requests.get(image_url).content)
+        cooking_info["image_name"] = image_name
         # Description
         try:
             if recipe_page_soup.find('div', class_='recipe__description').p:
@@ -226,8 +227,7 @@ class DiabetesScraper:
             for order_in_page, recipe_url in enumerate(recipe_url_list):
 
                 order_in_page += 1
-                cooking_num = str(int(category_row["id"])*10000 + order_in_page)
-                cooking_id = cooking_num.zfill(6)
+                cooking_id = int(category_row["id"])*10000 + order_in_page
 
                 category_dict = {"root_id": category_row["id"]}
                 self.save_recipe(f"{recipe_url}", cooking_id, category_dict)
